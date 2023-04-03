@@ -6,7 +6,7 @@
 /*   By: ylabrahm <ylabrahm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 23:11:38 by ylabrahm          #+#    #+#             */
-/*   Updated: 2023/04/03 22:49:52 by ylabrahm         ###   ########.fr       */
+/*   Updated: 2023/04/03 22:54:10 by ylabrahm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,10 @@ app.get('/login', (req, res) => {
 });
 
 app.get('/api', function (req, res) {
+    passport.authenticate("oauth2", {
+        failureRedirect: "/error",
+        failureMessage: true,
+    });
     try {
         const headers = {
             Authorization: `Bearer ${token}`,
@@ -242,16 +246,6 @@ app.get('/api', function (req, res) {
         res.send("error");
     }
 });
-
-
-// });
-
-//     // passport.authenticate("oauth2", {
-//     //     failureRedirect: "/error",
-//     //     failureMessage: true,
-//     // }),
-
-// );
 
 app.get("/dashboard", (req, res) => {
     if (req.cookies._rdm == null)
