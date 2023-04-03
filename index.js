@@ -6,7 +6,7 @@
 /*   By: ylabrahm <ylabrahm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 23:11:38 by ylabrahm          #+#    #+#             */
-/*   Updated: 2023/04/03 22:20:06 by ylabrahm         ###   ########.fr       */
+/*   Updated: 2023/04/03 22:22:53 by ylabrahm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ app.get('/api',
                         let _anonyme_login_color = _login_colors[getRandomInt(5)];
                         let _campus = _42_response.data.campus[0].name;
                         let _campus_id = _42_response.data.campus[0].id;
-                        res.cookie("_rdm", _rdm);
+                        // res.cookie("_rdm", _rdm);
                         let new_user_data = {
                             _rdm: _rdm,
                             _name: _name,
