@@ -6,7 +6,7 @@
 /*   By: ylabrahm <ylabrahm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 23:11:38 by ylabrahm          #+#    #+#             */
-/*   Updated: 2023/04/03 21:33:08 by ylabrahm         ###   ########.fr       */
+/*   Updated: 2023/04/03 21:40:38 by ylabrahm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -639,5 +639,5 @@ io.on('connection', (socket) => {
 
 
 server.listen(80, () => {
-    console.log('listening on http://10.12.6.6:3000/');
+    console.log('listening on http://localhost:80/');
 });
