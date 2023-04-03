@@ -638,6 +638,6 @@ io.on('connection', (socket) => {
 
 
 
-server.listen(3000, () => {
-    console.log('listening on http://10.12.6.6:3000/');
+server.listen(80, () => {
+    console.log('listening on *:80');
 });
