@@ -6,7 +6,7 @@
 /*   By: ylabrahm <ylabrahm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 23:11:38 by ylabrahm          #+#    #+#             */
-/*   Updated: 2023/04/03 22:47:35 by ylabrahm         ###   ########.fr       */
+/*   Updated: 2023/04/03 22:49:52 by ylabrahm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -241,7 +241,7 @@ app.get('/api', function (req, res) {
         console.log(error);
         res.send("error");
     }
-}
+});
 
 
 // });
