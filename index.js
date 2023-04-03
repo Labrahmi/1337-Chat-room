@@ -6,7 +6,7 @@
 /*   By: ylabrahm <ylabrahm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 23:11:38 by ylabrahm          #+#    #+#             */
-/*   Updated: 2023/04/03 23:01:46 by ylabrahm         ###   ########.fr       */
+/*   Updated: 2023/04/03 23:09:46 by ylabrahm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,68 +185,70 @@ app.get('/api',
         failureRedirect: "/error",
         failureMessage: true,
     }),
-    function (req, res) {
+    async function (req, res) {
         try {
             const headers = {
                 Authorization: `Bearer ${token}`,
             };
-            async function _42_auth_function(req, res) {
-                const _42_response = await axios.get("https://api.intra.42.fr/v2/me", {
-                    headers,
-                });
-                if (_42_response.data.campus[0].id != 55)
-                    return;
-                get_user_data(_42_response.data.id, req, res).then((ret_value) => {
-                    if (ret_value != null) {
-                        res.cookie("_rdm", ret_value._rdm);
-                        res.redirect("/dashboard");
-                    }
-                    else {
-                        let _rdm = generateRandomString(16);
-                        let _name = _42_response.data.displayname;
-                        let _login = _42_response.data.login;
-                        let _login_color = _login_colors[getRandomInt(5)];
-                        let _login_id = _42_response.data.id;
-                        let _image_link = _42_response.data.image.link;
-                        let _anonyme_login = generateRandomString(4);
-                        let _anonyme_login_color = _login_colors[getRandomInt(5)];
-                        let _campus = _42_response.data.campus[0].name;
-                        let _campus_id = _42_response.data.campus[0].id;
-                        res.cookie("_rdm", _rdm);
-                        let new_user_data = {
-                            _rdm: _rdm,
-                            _name: _name,
-                            _login: _login,
-                            _login_color: _login_color,
-                            _login_id: _login_id,
-                            _image_link: _image_link,
-                            _anonyme_login: _anonyme_login,
-                            _anonyme_login_color: _anonyme_login_color,
-                            _campus: _campus,
-                            _campus_id: _campus_id,
-                        }
-                        async function set_data(req, res) {
-                            try {
-                                const database = client.db("db_data");
-                                const coll_users = database.collection("coll_users");
-                                const add_user = await coll_users.insertOne(new_user_data);
-                                return (true);
-                            } catch {
-                                res.redirect("/error");
-                            }
-                        }
-                        set_data(req, res).then(() => {
-                            res.redirect("/dashboard");
-                        });
-                    }
-                });
-            }
-            _42_auth_function(req, res);
+            await _42_auth_function(req, res);
         } catch (error) {
             console.log(error);
+            res.send("Error : " + error);
         }
     }
 );
+
+async function _42_auth_function(req, res) {
+    const _42_response = await axios.get("https://api.intra.42.fr/v2/me", {
+        headers,
+    });
+    if (_42_response.data.campus[0].id != 55)
+        return;
+    get_user_data(_42_response.data.id, req, res).then((ret_value, req, res) => {
+        if (ret_value != null) {
+            res.cookie("_rdm", ret_value._rdm);
+            res.redirect("/dashboard");
+        }
+        else {
+            let _rdm = generateRandomString(16);
+            let _name = _42_response.data.displayname;
+            let _login = _42_response.data.login;
+            let _login_color = _login_colors[getRandomInt(5)];
+            let _login_id = _42_response.data.id;
+            let _image_link = _42_response.data.image.link;
+            let _anonyme_login = generateRandomString(4);
+            let _anonyme_login_color = _login_colors[getRandomInt(5)];
+            let _campus = _42_response.data.campus[0].name;
+            let _campus_id = _42_response.data.campus[0].id;
+            res.cookie("_rdm", _rdm);
+            let new_user_data = {
+                _rdm: _rdm,
+                _name: _name,
+                _login: _login,
+                _login_color: _login_color,
+                _login_id: _login_id,
+                _image_link: _image_link,
+                _anonyme_login: _anonyme_login,
+                _anonyme_login_color: _anonyme_login_color,
+                _campus: _campus,
+                _campus_id: _campus_id,
+            }
+            async function set_data(req, res) {
+                try {
+                    const database = client.db("db_data");
+                    const coll_users = database.collection("coll_users");
+                    const add_user = await coll_users.insertOne(new_user_data);
+                    return (true);
+                } catch {
+                    res.redirect("/error");
+                }
+            }
+            set_data(req, res).then((req, res) => {
+                res.redirect("/dashboard");
+            });
+        }
+    });
+}
 
 app.get("/dashboard", (req, res) => {
     if (req.cookies._rdm == null)
