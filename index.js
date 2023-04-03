@@ -6,7 +6,7 @@
 /*   By: ylabrahm <ylabrahm@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 23:11:38 by ylabrahm          #+#    #+#             */
-/*   Updated: 2023/04/03 21:50:56 by ylabrahm         ###   ########.fr       */
+/*   Updated: 2023/04/03 21:57:13 by ylabrahm         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -637,7 +637,7 @@ io.on('connection', (socket) => {
 
 
 
-
-server.listen(3000, () => {
-    console.log('listening on *:3000');
+server.listen(process.env.PORT || 3000, () => {
+    console.log('listening on *:3000'); 
 });
+
