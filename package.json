@@ -5,9 +5,14 @@
   "main": "index.js",
   "author": "ylabrahm",
   "license": "ISC",
+  "scripts": {
+    "start": "node index.js",
+    "heroku-postbuild": "npm install --production && npm run build"
+  },  
   "dependencies": {
     "all": "^0.0.0",
     "axios": "^1.3.4",
+    "build": "^0.1.4",
     "cookie-parser": "^1.4.6",
     "crypto": "^1.0.1",
     "dotenv": "^16.0.3",
