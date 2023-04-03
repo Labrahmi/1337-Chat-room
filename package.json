@@ -6,8 +6,7 @@
   "author": "ylabrahm",
   "license": "ISC",
   "scripts": {
-    "start": "node index.js",
-    "heroku-postbuild": "npm install --production && npm run build"
+    "start": "node index.js"
   },  
   "dependencies": {
     "all": "^0.0.0",
