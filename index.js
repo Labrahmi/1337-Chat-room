@@ -6,11 +6,13 @@
 /*   By: macbook <macbook@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/01 23:11:38 by ylabrahm          #+#    #+#             */
-/*   Updated: 2023/04/04 19:33:31 by macbook          ###   ########.fr       */
+/*   Updated: 2023/04/04 21:52:58 by macbook          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 // imports
+const os = require("os");
+const https = require("https");
 const express = require("express");
 const app = express();
 const http = require("http");
@@ -102,6 +104,7 @@ let _login_colors = [
   "text-yello-300",
   "text-slate-300",
   "text-lime-300",
+  "text-white",
 ];
 
 // set engine to ejs, so the app can render ejs files to the end-user interface.
@@ -182,19 +185,33 @@ app.get("/api", passport.authenticate("oauth2"), async function (req, res) {
       Authorization: `Bearer ${token}`,
     };
     let _42_response = await axios.get("https://api.intra.42.fr/v2/me", {
-        headers,
+      headers,
     });
     _42_response = _42_response.data;
-    let _rdm = generateRandomString(16);
-    let obj_user = {
-        user_data: _42_response,
-        _rdm: _rdm
+    if (_42_response.campus[0].id != 55) {
+      res.redirect("/error");
+    } else {
+      const db = client.db("db_data");
+      const coll = db.collection("coll_users");
+      let _user_exist = await coll.find({
+        'user_data.id': _42_response.id,
+      }).toArray();
+      let _rdm = generateRandomString(16);
+      if (_user_exist.length == 0) {
+        let obj_user = {
+          user_data: _42_response,
+          _rdm: _rdm,
+          _login_color: _login_colors[getRandomInt(6)],
+          _anonyme_login_color: _login_colors[getRandomInt(6)],
+        };
+        await coll.insertOne(obj_user);
+        res.cookie("_rdm", _rdm);
+      }
+      else {
+        res.cookie("_rdm", _user_exist[0]._rdm);
+      }
+      res.redirect("/dashboard");
     }
-    const db = client.db("db_data");
-    const coll = db.collection("coll_users");
-    await coll.insertOne(obj_user);
-    res.cookie("_rdm", _rdm);
-    res.redirect('/dashboard')
   } catch (error) {
     console.log(error);
     res.redirect("/error");
@@ -214,11 +231,11 @@ async function _42_auth_function(req, res) {
       let _rdm = generateRandomString(16);
       let _name = _42_response.data.displayname;
       let _login = _42_response.data.login;
-      let _login_color = _login_colors[getRandomInt(5)];
+      let _login_color = _login_colors[getRandomInt(6)];
+      let _anonyme_login_color = _login_colors[getRandomInt(6)];
+      let _anonyme_login = generateRandomString(4);
       let _login_id = _42_response.data.id;
       let _image_link = _42_response.data.image.link;
-      let _anonyme_login = generateRandomString(4);
-      let _anonyme_login_color = _login_colors[getRandomInt(5)];
       let _campus = _42_response.data.campus[0].name;
       let _campus_id = _42_response.data.campus[0].id;
       res.cookie("_rdm", _rdm);
@@ -643,6 +660,19 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(process.env.PORT || 3000, () => {
-  console.log("listening on *:3000");
-});
+https
+  .get("https://api.ipify.org", (response) => {
+    let data = "";
+    response.on("data", (chunk) => {
+      data += chunk;
+    });
+    response.on("end", () => {
+      const ipAddress = data;
+      server.listen(process.env.PORT || 3000, () => {
+        console.log(`listening on *:3000 | ip : ${ipAddress}`);
+      });
+    });
+  })
+  .on("error", (error) => {
+    console.error(error);
+  });
