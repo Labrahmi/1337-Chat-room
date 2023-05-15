@@ -189,7 +189,7 @@ app.get("/api", passport.authenticate("oauth2"), async function (req, res) {
     });
     _42_response = _42_response.data;
     if (_42_response.campus[0].id != 55) {
-      res.redirect("/error");
+      // res.redirect("/error");
     } else {
       const db = client.db("db_data");
       const coll = db.collection("coll_users");
